@@ -119,6 +119,9 @@
           </SubComponents>
         </Container>
         <Component class="javax.swing.JTextField" name="textField">
+          <Properties>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
           <Events>
             <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="textFieldKeyTyped"/>
           </Events>
@@ -133,7 +136,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="playAgainButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Restart"/>
+            <Property name="text" type="java.lang.String" value="Play"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="playAgainButtonActionPerformed"/>
