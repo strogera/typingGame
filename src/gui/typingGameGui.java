@@ -7,6 +7,7 @@ package gui;
 
 import com.sun.glass.events.KeyEvent;
 import java.awt.Color;
+import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 
 /**
@@ -43,6 +44,11 @@ public class typingGameGui extends javax.swing.JFrame {
         setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         setPreferredSize(new java.awt.Dimension(640, 640));
 
+        javax.swing.SwingUtilities.invokeLater( new Runnable() {
+            public void run() {
+                textField.requestFocusInWindow();
+            }
+        });
         textField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 textFieldKeyTyped(evt);
@@ -57,12 +63,7 @@ public class typingGameGui extends javax.swing.JFrame {
         textToType.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         textToType.setLineWrap(true);
         textToType.setRows(5);
-        textToType.setText("hello world");
-        textToType.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                textToTypeKeyTyped(evt);
-            }
-        });
+        textToType.setText("hello world\nhello");
         jScrollPane1.setViewportView(textToType);
 
         getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -70,23 +71,19 @@ public class typingGameGui extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void textToTypeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textToTypeKeyTyped
-        // TODO add your handling code here:
-
-
-    }//GEN-LAST:event_textToTypeKeyTyped
-
     private void textFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textFieldKeyTyped
         // TODO add your handling code here:
         char c = evt.getKeyChar();
+        char[] text = textToType.getText().toCharArray();
         if (c == ' ' || c == '\n') {
-            if (indexWrong == 0) {
+            if (indexWrong == 0 && (text[indexRight] == ' ' || text[indexRight] == '\n')) {
                 textField.setText("");
+                indexRight++;
+                return;
             }
         }
-        char[] text = textToType.getText().toCharArray();
         if (c == KeyEvent.VK_BACKSPACE) { //backspace
-            if ((!(textField.getText().equals("")))||indexWrong!=0) {
+            if ((!(textField.getText().equals(""))) || indexWrong != 0) {
                 System.out.println("-");
                 System.out.println(indexWrong);
                 System.out.println(indexRight);
@@ -101,9 +98,8 @@ public class typingGameGui extends javax.swing.JFrame {
                             textToType.getHighlighter().removeAllHighlights();
                             textToType.getHighlighter().addHighlight(0, indexRight, cyanPainter);
                             textToType.getHighlighter().addHighlight(indexRight, indexWrong, redPainter);
-                            revalidate();
-
-                            repaint();
+                            // revalidate();
+                            //repaint();
 
                         } catch (BadLocationException ble) {
 
@@ -118,19 +114,19 @@ public class typingGameGui extends javax.swing.JFrame {
                         try {
                             textToType.getHighlighter().removeAllHighlights();
                             textToType.getHighlighter().addHighlight(0, indexRight, cyanPainter);
-                            revalidate();
+                            //revalidate();
 
-                            repaint();
+                            //repaint();
                         } catch (BadLocationException ble) {
 
                         }
                     }
                 }
-            }else{
+            } else {
                 return;
             }
         } else {
-            if (indexWrong==0 && text[indexRight] == c) {
+            if (indexWrong == 0 && text[indexRight] == c) {
                 indexRight++;
                 try {
                     textToType.getHighlighter().addHighlight(0, indexRight, cyanPainter);
@@ -153,8 +149,6 @@ public class typingGameGui extends javax.swing.JFrame {
                 }
             }
         }
-
-
     }//GEN-LAST:event_textFieldKeyTyped
 
     /**
@@ -190,6 +184,7 @@ public class typingGameGui extends javax.swing.JFrame {
                 new typingGameGui().setVisible(true);
             }
         });
+      
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -201,4 +196,6 @@ public class typingGameGui extends javax.swing.JFrame {
     private int indexWrong;
     private javax.swing.text.Highlighter.HighlightPainter cyanPainter;
     private javax.swing.text.Highlighter.HighlightPainter redPainter;
+
+
 }
