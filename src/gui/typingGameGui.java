@@ -7,6 +7,7 @@ package gui;
 
 import com.sun.glass.events.KeyEvent;
 import java.awt.Color;
+import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 
@@ -35,14 +36,20 @@ public class typingGameGui extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         textField = new javax.swing.JTextField();
+        playAgainButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         textToType = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         setPreferredSize(new java.awt.Dimension(640, 640));
+        java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
+        layout.columnWeights = new double[] {0.1};
+        layout.rowWeights = new double[] {0.1};
+        getContentPane().setLayout(layout);
 
         javax.swing.SwingUtilities.invokeLater( new Runnable() {
             public void run() {
@@ -54,7 +61,25 @@ public class typingGameGui extends javax.swing.JFrame {
                 textFieldKeyTyped(evt);
             }
         });
-        getContentPane().add(textField, java.awt.BorderLayout.PAGE_END);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
+        getContentPane().add(textField, gridBagConstraints);
+
+        playAgainButton.setText("Restart");
+        playAgainButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                playAgainButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        getContentPane().add(playAgainButton, gridBagConstraints);
 
         jScrollPane1.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
 
@@ -63,16 +88,23 @@ public class typingGameGui extends javax.swing.JFrame {
         textToType.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         textToType.setLineWrap(true);
         textToType.setRows(5);
-        textToType.setText("hello world\nhello");
+        textToType.setText("hello world");
+        textToType.setWrapStyleWord(true);
+        textToType.setRequestFocusEnabled(false);
         jScrollPane1.setViewportView(textToType);
 
-        getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        getContentPane().add(jScrollPane1, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void textFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textFieldKeyTyped
-        // TODO add your handling code here:
         char c = evt.getKeyChar();
         char[] text = textToType.getText().toCharArray();
         if (c == ' ' || c == '\n') {
@@ -135,6 +167,7 @@ public class typingGameGui extends javax.swing.JFrame {
                 }
                 if (text.length == indexRight) {
                     textField.setEnabled(false);
+                    playAgainButton.setText("Play again");
                 }
             } else {
                 if (indexWrong == 0) {
@@ -150,6 +183,20 @@ public class typingGameGui extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_textFieldKeyTyped
+
+    private void playAgainButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playAgainButtonActionPerformed
+        indexRight = 0;
+        indexWrong = 0;
+        textToType.getHighlighter().removeAllHighlights();
+        textField.setText("");
+        textField.setEnabled(true);
+        textField.requestFocusInWindow();
+        if (playAgainButton.getText().equals("Play again")) {
+            playAgainButton.setText("Restart");
+        }
+
+
+    }//GEN-LAST:event_playAgainButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -182,13 +229,15 @@ public class typingGameGui extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new typingGameGui().setVisible(true);
+
             }
         });
-      
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton playAgainButton;
     private javax.swing.JTextField textField;
     private javax.swing.JTextArea textToType;
     // End of variables declaration//GEN-END:variables
@@ -196,6 +245,5 @@ public class typingGameGui extends javax.swing.JFrame {
     private int indexWrong;
     private javax.swing.text.Highlighter.HighlightPainter cyanPainter;
     private javax.swing.text.Highlighter.HighlightPainter redPainter;
-
 
 }
