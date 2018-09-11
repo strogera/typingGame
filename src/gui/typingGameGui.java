@@ -9,6 +9,11 @@ import com.sun.glass.events.KeyEvent;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import static javax.management.timer.Timer.ONE_SECOND;
 import javax.swing.SwingConstants;
@@ -76,6 +81,7 @@ public class typingGameGui extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        jFileChooser1 = new javax.swing.JFileChooser();
         wps = new javax.swing.JPanel();
         currTimeCount = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
@@ -87,6 +93,7 @@ public class typingGameGui extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        OpenFileOption = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -205,6 +212,15 @@ public class typingGameGui extends javax.swing.JFrame {
         getContentPane().add(jPanel1);
 
         jMenu1.setText("File");
+
+        OpenFileOption.setText("Open File");
+        OpenFileOption.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                OpenFileOptionActionPerformed(evt);
+            }
+        });
+        jMenu1.add(OpenFileOption);
+
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Edit");
@@ -284,9 +300,7 @@ public class typingGameGui extends javax.swing.JFrame {
                 try {
                     textToType.getHighlighter().removeAllHighlights();
                     textToType.getHighlighter().addHighlight(0, indexRight - curWordRight, cyanPainter);
-                    //revalidate();
 
-                    //repaint();
                 } catch (BadLocationException ble) {
 
                 }
@@ -323,13 +337,31 @@ public class typingGameGui extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_textFieldKeyTyped
 
+    private void OpenFileOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenFileOptionActionPerformed
+        // TODO add your handling code here:
+        int returnVal = jFileChooser1.showOpenDialog(this);
+        if (returnVal == jFileChooser1.APPROVE_OPTION) {
+            File file = jFileChooser1.getSelectedFile();
+            try {
+
+                String text = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+                textToType.setText(text);
+                playAgainButtonActionPerformed(null); ///
+            } catch (IOException ex) {
+                System.out.println("problem accessing file" + file.getAbsolutePath());
+            }
+        } else {
+            System.out.println("File access cancelled by user.");
+        }
+    }//GEN-LAST:event_OpenFileOptionActionPerformed
+
     private Timer CountTime() {
         Timer countTypingTime = new Timer((int) ONE_SECOND, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 countSecs++;
-                currTimeCount.setText("Time: "+String.valueOf(countSecs/60)+":"+String.valueOf(countSecs%60));
+                currTimeCount.setText("Time: " + String.valueOf(countSecs / 60) + ":" + String.valueOf(countSecs % 60));
 
             }
         });
@@ -375,7 +407,9 @@ public class typingGameGui extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem OpenFileOption;
     private javax.swing.JLabel currTimeCount;
+    private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
