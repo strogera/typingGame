@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.StringTokenizer;
 import static javax.management.timer.Timer.ONE_SECOND;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
@@ -102,7 +103,7 @@ public class typingGameGui extends javax.swing.JFrame {
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
         currTimeCount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        currTimeCount.setText("Time: -");
+        currTimeCount.setText("Time: - WPM: -");
         currTimeCount.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
 
         javax.swing.GroupLayout wpsLayout = new javax.swing.GroupLayout(wps);
@@ -236,13 +237,14 @@ public class typingGameGui extends javax.swing.JFrame {
         //restart highlight
         indexRight = 0;
         indexWrong = 0;
+        numberOfWordsTyped = 0;
         textToType.getHighlighter().removeAllHighlights();
         textField.setDisabledTextColor(Color.black);
 
         //timer takes some time to start
         textField.setText("loading..");
 
-        currTimeCount.setText("Time: -");
+        currTimeCount.setText("Time: - WPM: -");
         //sec countdown
         countdown = 4;
         timer.start();
@@ -266,6 +268,12 @@ public class typingGameGui extends javax.swing.JFrame {
             textField.setText("");
             indexRight++;
             curWordRight = 0;
+            numberOfWordsTyped++;
+            try {
+                textToType.getHighlighter().addHighlight(indexRight - 1, indexRight, cyanPainter);
+            } catch (BadLocationException ble) {
+
+            }
             return;
         }
         if (c == KeyEvent.VK_BACKSPACE) { //backspace
@@ -317,7 +325,7 @@ public class typingGameGui extends javax.swing.JFrame {
                 if (text.length == indexRight) { //end of game
                     timeCounter.stop();
                     countSecs = 0;
-
+                    numberOfWordsTyped++;
                     textField.setText("");
                     textField.setEnabled(false);
                     playAgainButton.setText("Play");
@@ -361,7 +369,7 @@ public class typingGameGui extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 countSecs++;
-                currTimeCount.setText("Time: " + String.valueOf(countSecs / 60) + ":" + String.valueOf(countSecs % 60));
+                currTimeCount.setText("Time: " + String.valueOf(countSecs / 60) + ":" + String.valueOf(countSecs % 60) + "  WPM: " + String.valueOf((60 * numberOfWordsTyped) / countSecs));
 
             }
         });
@@ -428,4 +436,5 @@ public class typingGameGui extends javax.swing.JFrame {
     private Timer timer, timeCounter;
     private int countdown = 4;
     private int countSecs = 0;
+    private int numberOfWordsTyped = 0;
 }

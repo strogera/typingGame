@@ -92,7 +92,7 @@
         <Component class="javax.swing.JLabel" name="currTimeCount">
           <Properties>
             <Property name="horizontalAlignment" type="int" value="2"/>
-            <Property name="text" type="java.lang.String" value="Time: -"/>
+            <Property name="text" type="java.lang.String" value="Time: - WPM: -"/>
             <Property name="horizontalTextPosition" type="int" value="4"/>
           </Properties>
         </Component>
