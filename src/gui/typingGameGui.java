@@ -352,8 +352,20 @@ public class typingGameGui extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 countSecs++;
-                currTimeCount.setText("Time: " + String.valueOf(countSecs / 60) + ":" + String.valueOf(countSecs % 60) + "  WPM: " + String.valueOf((60 * numberOfWordsTyped) / countSecs));
-
+                StringBuilder sb = new StringBuilder();
+                sb.append("Time: ");
+                sb.append(String.valueOf(countSecs / 60));
+                sb.append(":");
+                if (countSecs % 60 >= 10) {
+                    sb.append(String.valueOf(countSecs % 60));
+                } else {
+                    sb.append("0");
+                    sb.append(String.valueOf(countSecs % 60));
+                }
+                sb.append(" WPM: ");
+                sb.append(String.valueOf((60 * numberOfWordsTyped) / countSecs));
+                //currTimeCount.setText("Time: " + String.valueOf(countSecs / 60) + ":" + String.valueOf(countSecs % 60) + "  WPM: " + String.valueOf((60 * numberOfWordsTyped) / countSecs));
+                    currTimeCount.setText(sb.toString());
             }
         });
         return countTypingTime;
