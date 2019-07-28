@@ -33,7 +33,7 @@ public class typingGameGui extends javax.swing.JFrame {
     public typingGameGui() {
         initComponents();
         //typing highlighting set up
-        indexRight = 0;
+        indexCorrect = 0;
         indexWrong = 0;
         cyanPainter = new javax.swing.text.DefaultHighlighter.DefaultHighlightPainter(Color.cyan);
         redPainter = new javax.swing.text.DefaultHighlighter.DefaultHighlightPainter(Color.red);
@@ -45,26 +45,26 @@ public class typingGameGui extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent e) {
                 countdown--;
                 if (countdown == 0) {
-                    textField.setText("");
-                    textField.setHorizontalAlignment(SwingConstants.LEFT);
+                    inputTextField.setText("");
+                    inputTextField.setHorizontalAlignment(SwingConstants.LEFT);
                     playAgainButton.setEnabled(true);
                     countdown = 4;
                     ((Timer) e.getSource()).stop();
 
-                    textField.setText("");
-                    textField.setEnabled(true);
+                    inputTextField.setText("");
+                    inputTextField.setEnabled(true);
                     timeCounter.start();
 
-                    textField.requestFocusInWindow();
+                    inputTextField.requestFocusInWindow();
                 } else if (countdown == 3) {
-                    textField.setEnabled(false);
+                    inputTextField.setEnabled(false);
                     playAgainButton.setEnabled(false);
-                    textField.setHorizontalAlignment(SwingConstants.CENTER);
-                    textField.setDisabledTextColor(Color.red);
-                    textField.setText(String.valueOf(countdown));
+                    inputTextField.setHorizontalAlignment(SwingConstants.CENTER);
+                    inputTextField.setDisabledTextColor(Color.red);
+                    inputTextField.setText(String.valueOf(countdown));
 
                 } else {
-                    textField.setText(String.valueOf(countdown));
+                    inputTextField.setText(String.valueOf(countdown));
 
                 }
             }
@@ -88,7 +88,7 @@ public class typingGameGui extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         textToType = new javax.swing.JTextArea();
-        textField = new javax.swing.JTextField();
+        inputTextField = new javax.swing.JTextField();
         playAgainButton = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -138,10 +138,11 @@ public class typingGameGui extends javax.swing.JFrame {
 
         textToType.setEditable(false);
         textToType.setColumns(20);
-        textToType.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        textToType.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         textToType.setLineWrap(true);
         textToType.setRows(5);
         textToType.setText("hello world");
+        textToType.setToolTipText("");
         textToType.setWrapStyleWord(true);
         textToType.setRequestFocusEnabled(false);
         jScrollPane1.setViewportView(textToType);
@@ -154,10 +155,11 @@ public class typingGameGui extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
         jPanel2.add(jScrollPane1, gridBagConstraints);
 
-        textField.setEnabled(false);
-        textField.addKeyListener(new java.awt.event.KeyAdapter() {
+        inputTextField.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        inputTextField.setEnabled(false);
+        inputTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                textFieldKeyTyped(evt);
+                inputTextFieldKeyTyped(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -165,7 +167,7 @@ public class typingGameGui extends javax.swing.JFrame {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        jPanel2.add(textField, gridBagConstraints);
+        jPanel2.add(inputTextField, gridBagConstraints);
 
         playAgainButton.setText("Play");
         javax.swing.SwingUtilities.invokeLater( new Runnable() {
@@ -235,14 +237,14 @@ public class typingGameGui extends javax.swing.JFrame {
     private void playAgainButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playAgainButtonActionPerformed
         //play button, whenever its pushed the game starts/restarts
         //restart highlight
-        indexRight = 0;
+        indexCorrect = 0;
         indexWrong = 0;
         numberOfWordsTyped = 0;
         textToType.getHighlighter().removeAllHighlights();
-        textField.setDisabledTextColor(Color.black);
+        inputTextField.setDisabledTextColor(Color.black);
 
         //timer takes some time to start
-        textField.setText("loading..");
+        inputTextField.setText("Loading..");
 
         currTimeCount.setText("Time: - WPM: -");
         //sec countdown
@@ -261,89 +263,70 @@ public class typingGameGui extends javax.swing.JFrame {
 
     }//GEN-LAST:event_playAgainButtonActionPerformed
 
-    private void textFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textFieldKeyTyped
+    private void inputTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputTextFieldKeyTyped
         char c = evt.getKeyChar();
         char[] text = textToType.getText().toCharArray();
-        if (indexWrong == 0 && ((c == ' ' || c == '\n') && (text[indexRight] == ' ' || text[indexRight] == '\n'))) { //go to the next word either by pressing space or enter when you complete a word
-            textField.setText("");
-            indexRight++;
-            curWordRight = 0;
-            numberOfWordsTyped++;
-            try {
-                textToType.getHighlighter().addHighlight(indexRight - 1, indexRight, cyanPainter);
-            } catch (BadLocationException ble) {
-
-            }
-            return;
+        String tempInputText = inputTextField.getText();
+        //build the input String with the typed character added
+        StringBuilder sb = new StringBuilder();
+        sb.append(tempInputText);
+        if (c != '\n') { //enter is allowed to change words
+            sb.append(c);
+        } else {
+            sb.append(' ');
         }
+        tempInputText = sb.toString();
+        char[] inputText = tempInputText.toCharArray();
+
         if (c == KeyEvent.VK_BACKSPACE) { //backspace
-            if ((!(textField.getText().equals(""))) && indexWrong != 0) { //if backspace is pressed and the field is not empty while there are wrong letters
-                indexWrong--;
-                try {
-                    textToType.getHighlighter().removeAllHighlights();
-                    textToType.getHighlighter().addHighlight(0, indexRight, cyanPainter);
-                    textToType.getHighlighter().addHighlight(indexRight, indexWrong, redPainter);
-                } catch (BadLocationException ble) {
-
-                }
-                if (indexWrong == indexRight) {
-                    indexWrong = 0;
-                }
-            } else if ((!(textField.getText().equals(""))) && indexWrong == 0) { //player is deleting correct letters
-                if (indexRight != 0) {
-                    indexRight--;
-                    curWordRight--;
-                }
-                try {
-                    textToType.getHighlighter().removeAllHighlights();
-                    textToType.getHighlighter().addHighlight(0, indexRight, cyanPainter);
-                } catch (BadLocationException ble) {
-
-                }
-
-            } else { //textfield is empty
-                indexWrong = 0;
-                indexRight -= curWordRight;
-                curWordRight = 0;
-                try {
-                    textToType.getHighlighter().removeAllHighlights();
-                    textToType.getHighlighter().addHighlight(0, indexRight - curWordRight, cyanPainter);
-
-                } catch (BadLocationException ble) {
-
-                }
+            if (inputText.length == 0) { //if the textfield is empty do nothing
+                return;
             }
-        } else { //any key pressed
-            if (indexWrong == 0 && text[indexRight] == c) { //correct letter
-                indexRight++;
-                curWordRight++;
+            //rebuild the input String without the character that is going to be deleted (last character)
+            StringBuilder sb2 = new StringBuilder();
+            sb2.append(tempInputText);
+            sb2.setLength(sb.length() - 1);
+            tempInputText = sb2.toString();
+            inputText = tempInputText.toCharArray();
+        }
+        curWordCorrectCount = 0; //count how many characters in the input String is correct
+        for (int i = 0; i < inputText.length; i++) {
+            if (inputText[i] != text[indexCorrect + i]) {
                 try {
-                    textToType.getHighlighter().addHighlight(0, indexRight, cyanPainter);
+                    textToType.getHighlighter().removeAllHighlights();
+                    textToType.getHighlighter().addHighlight(0, indexCorrect + curWordCorrectCount, cyanPainter);
+                    textToType.getHighlighter().addHighlight(indexCorrect + curWordCorrectCount, indexCorrect + inputText.length, redPainter);
                 } catch (BadLocationException ble) {
-
                 }
-                if (text.length == indexRight) { //end of game
-                    timeCounter.stop();
-                    countSecs = 0;
-                    numberOfWordsTyped++;
-                    textField.setText("");
-                    textField.setEnabled(false);
-                    playAgainButton.setText("Play");
-                }
+                return;
             } else {
-                if (indexWrong == 0) { //first wrong letter
-                    indexWrong = indexRight + 1;
-                } else {
-                    indexWrong++;
-                }
-                try {
-                    textToType.getHighlighter().addHighlight(indexRight, indexWrong, redPainter);
-                } catch (BadLocationException ble) {
-
-                }
+                curWordCorrectCount++;
             }
         }
-    }//GEN-LAST:event_textFieldKeyTyped
+        try {
+            textToType.getHighlighter().removeAllHighlights();
+            textToType.getHighlighter().addHighlight(0, indexCorrect + curWordCorrectCount, cyanPainter);
+        } catch (BadLocationException ble) {
+
+        }
+
+        if (((c == ' ' || c == '\n'))) { //go to the next word either by pressing space or enter when you complete a word
+            evt.consume(); //don't show the space in the input text field, just change word
+            inputTextField.setText("");
+            indexCorrect += curWordCorrectCount;
+            curWordCorrectCount = 0;
+            numberOfWordsTyped++;
+        }
+        if (text.length == (indexCorrect + curWordCorrectCount)) { //end of game
+            timeCounter.stop();
+            countSecs = 0;
+            numberOfWordsTyped++; //count last word
+            inputTextField.setText("");
+            inputTextField.setEnabled(false);
+            playAgainButton.setText("Play");
+        }
+
+    }//GEN-LAST:event_inputTextFieldKeyTyped
 
     private void OpenFileOptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenFileOptionActionPerformed
         // TODO add your handling code here:
@@ -417,6 +400,7 @@ public class typingGameGui extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem OpenFileOption;
     private javax.swing.JLabel currTimeCount;
+    private javax.swing.JTextField inputTextField;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
@@ -426,15 +410,15 @@ public class typingGameGui extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton playAgainButton;
-    private javax.swing.JTextField textField;
     private javax.swing.JTextArea textToType;
     private javax.swing.JPanel wps;
     // End of variables declaration//GEN-END:variables
-    private int indexRight, indexWrong, curWordRight = 0;
+    private int indexCorrect, indexWrong, curWordCorrectCount = 0;
     private javax.swing.text.Highlighter.HighlightPainter cyanPainter;
     private javax.swing.text.Highlighter.HighlightPainter redPainter;
     private Timer timer, timeCounter;
     private int countdown = 4;
     private int countSecs = 0;
-    private int numberOfWordsTyped = 0;
+    private int numberOfWordsTyped = 0, currWordStart = 0;
+    boolean emptyFieldFlag = true;
 }
