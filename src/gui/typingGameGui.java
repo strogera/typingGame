@@ -7,6 +7,7 @@ package gui;
 
 import com.sun.glass.events.KeyEvent;
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -16,10 +17,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static javax.management.timer.Timer.ONE_SECOND;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Highlighter.Highlight;
 
 /**
  *
@@ -90,6 +94,8 @@ public class typingGameGui extends javax.swing.JFrame {
         textToType = new javax.swing.JTextArea();
         inputTextField = new javax.swing.JTextField();
         playAgainButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jScrollPane3 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -186,6 +192,8 @@ public class typingGameGui extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
         jPanel2.add(playAgainButton, gridBagConstraints);
+        jPanel2.add(jScrollPane2, new java.awt.GridBagConstraints());
+        jPanel2.add(jScrollPane3, new java.awt.GridBagConstraints());
 
         getContentPane().add(jPanel2);
 
@@ -243,6 +251,15 @@ public class typingGameGui extends javax.swing.JFrame {
         textToType.getHighlighter().removeAllHighlights();
         inputTextField.setDisabledTextColor(Color.black);
 
+        //scroll to the start of text
+        Rectangle viewRect;
+        try {
+            viewRect = textToType.modelToView(0);
+            jScrollPane1.getVerticalScrollBar().setValue(viewRect.y);
+        } catch (BadLocationException ex) {
+            Logger.getLogger(typingGameGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         //timer takes some time to start
         inputTextField.setText("Loading..");
 
@@ -253,8 +270,6 @@ public class typingGameGui extends javax.swing.JFrame {
 
         //set button title when you hit play
         if (playAgainButton.getText().equals("Play")) {
-            // timeCounter.start();
-
             playAgainButton.setText("Restart");
         } else {
             timeCounter.stop();
@@ -310,6 +325,16 @@ public class typingGameGui extends javax.swing.JFrame {
 
         }
 
+        //this makes sure the text area is visible by scrolling the text so that the line
+        //that is being typed is on the top of the text area (JScrollPane1) if theres is scrollable text remaining.
+        Rectangle viewRect;
+        try {
+            viewRect = textToType.modelToView(indexCorrect + curWordCorrectCount);
+            jScrollPane1.getVerticalScrollBar().setValue(viewRect.y);
+        } catch (BadLocationException ex) {
+            Logger.getLogger(typingGameGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         if (((c == ' ' || c == '\n'))) { //go to the next word either by pressing space or enter when you complete a word
             evt.consume(); //don't show the space in the input text field, just change word
             inputTextField.setText("");
@@ -337,7 +362,7 @@ public class typingGameGui extends javax.swing.JFrame {
 
                 String text = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
                 textToType.setText(text);
-                playAgainButtonActionPerformed(null); ///
+                //playAgainButtonActionPerformed(null); //start playing automatically when the file is loaded
             } catch (IOException ex) {
                 System.out.println("problem accessing file" + file.getAbsolutePath());
             }
@@ -365,7 +390,7 @@ public class typingGameGui extends javax.swing.JFrame {
                 sb.append(" WPM: ");
                 sb.append(String.valueOf((60 * numberOfWordsTyped) / countSecs));
                 //currTimeCount.setText("Time: " + String.valueOf(countSecs / 60) + ":" + String.valueOf(countSecs % 60) + "  WPM: " + String.valueOf((60 * numberOfWordsTyped) / countSecs));
-                    currTimeCount.setText(sb.toString());
+                currTimeCount.setText(sb.toString());
             }
         });
         return countTypingTime;
@@ -421,6 +446,8 @@ public class typingGameGui extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton playAgainButton;
     private javax.swing.JTextArea textToType;
     private javax.swing.JPanel wps;
