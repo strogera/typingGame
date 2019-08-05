@@ -14,16 +14,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static javax.management.timer.Timer.ONE_SECOND;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Highlighter.Highlight;
 
 /**
  *
@@ -38,7 +34,6 @@ public class typingGameGui extends javax.swing.JFrame {
         initComponents();
         //typing highlighting set up
         indexCorrect = 0;
-        indexWrong = 0;
         cyanPainter = new javax.swing.text.DefaultHighlighter.DefaultHighlightPainter(Color.cyan);
         redPainter = new javax.swing.text.DefaultHighlighter.DefaultHighlightPainter(Color.red);
 
@@ -94,8 +89,6 @@ public class typingGameGui extends javax.swing.JFrame {
         textToType = new javax.swing.JTextArea();
         inputTextField = new javax.swing.JTextField();
         playAgainButton = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jScrollPane3 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -192,8 +185,6 @@ public class typingGameGui extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
         jPanel2.add(playAgainButton, gridBagConstraints);
-        jPanel2.add(jScrollPane2, new java.awt.GridBagConstraints());
-        jPanel2.add(jScrollPane3, new java.awt.GridBagConstraints());
 
         getContentPane().add(jPanel2);
 
@@ -246,7 +237,6 @@ public class typingGameGui extends javax.swing.JFrame {
         //play button, whenever its pushed the game starts/restarts
         //restart highlight
         indexCorrect = 0;
-        indexWrong = 0;
         numberOfWordsTyped = 0;
         textToType.getHighlighter().removeAllHighlights();
         inputTextField.setDisabledTextColor(Color.black);
@@ -288,7 +278,7 @@ public class typingGameGui extends javax.swing.JFrame {
         if (c != '\n') { //enter is allowed to change words
             sb.append(c);
         } else {
-            sb.append(' ');
+            sb.append(System.getProperty("line.separator"));
         }
         tempInputText = sb.toString();
         char[] inputText = tempInputText.toCharArray();
@@ -304,25 +294,32 @@ public class typingGameGui extends javax.swing.JFrame {
             tempInputText = sb2.toString();
             inputText = tempInputText.toCharArray();
         }
+        
         curWordCorrectCount = 0; //count how many characters in the input String is correct
+        boolean hasMistakes = false;
         for (int i = 0; i < inputText.length; i++) {
             if (inputText[i] != text[indexCorrect + i]) {
-                try {
-                    textToType.getHighlighter().removeAllHighlights();
-                    textToType.getHighlighter().addHighlight(0, indexCorrect + curWordCorrectCount, cyanPainter);
-                    textToType.getHighlighter().addHighlight(indexCorrect + curWordCorrectCount, indexCorrect + inputText.length, redPainter);
-                } catch (BadLocationException ble) {
-                }
-                return;
+                hasMistakes = true;
+                break;
             } else {
                 curWordCorrectCount++;
             }
         }
-        try {
-            textToType.getHighlighter().removeAllHighlights();
-            textToType.getHighlighter().addHighlight(0, indexCorrect + curWordCorrectCount, cyanPainter);
-        } catch (BadLocationException ble) {
+        
+        if (hasMistakes) {
+            try {
+                textToType.getHighlighter().removeAllHighlights();
+                textToType.getHighlighter().addHighlight(0, indexCorrect + curWordCorrectCount, cyanPainter);
+                textToType.getHighlighter().addHighlight(indexCorrect + curWordCorrectCount, indexCorrect + inputText.length, redPainter);
+            } catch (BadLocationException ble) {
+            }
+        } else {
+            try {
+                textToType.getHighlighter().removeAllHighlights();
+                textToType.getHighlighter().addHighlight(0, indexCorrect + curWordCorrectCount, cyanPainter);
+            } catch (BadLocationException ble) {
 
+            }
         }
 
         //this makes sure the text area is visible by scrolling the text so that the line
@@ -334,8 +331,8 @@ public class typingGameGui extends javax.swing.JFrame {
         } catch (BadLocationException ex) {
             Logger.getLogger(typingGameGui.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        if (((c == ' ' || c == '\n'))) { //go to the next word either by pressing space or enter when you complete a word
+        
+        if (((c == ' ' || c == '\n') && (!hasMistakes))) { //go to the next word either by pressing space or enter when you complete a word
             evt.consume(); //don't show the space in the input text field, just change word
             inputTextField.setText("");
             indexCorrect += curWordCorrectCount;
@@ -362,7 +359,7 @@ public class typingGameGui extends javax.swing.JFrame {
 
                 String text = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
                 textToType.setText(text);
-                //playAgainButtonActionPerformed(null); //start playing automatically when the file is loaded
+                playAgainButtonActionPerformed(null); //start playing automatically when the file is loaded
             } catch (IOException ex) {
                 System.out.println("problem accessing file" + file.getAbsolutePath());
             }
@@ -446,13 +443,11 @@ public class typingGameGui extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton playAgainButton;
     private javax.swing.JTextArea textToType;
     private javax.swing.JPanel wps;
     // End of variables declaration//GEN-END:variables
-    private int indexCorrect, indexWrong, curWordCorrectCount = 0;
+    private int indexCorrect, curWordCorrectCount = 0;
     private javax.swing.text.Highlighter.HighlightPainter cyanPainter;
     private javax.swing.text.Highlighter.HighlightPainter redPainter;
     private Timer timer, timeCounter;
