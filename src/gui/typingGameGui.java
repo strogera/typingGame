@@ -261,7 +261,7 @@ public class typingGameGui extends javax.swing.JFrame {
 	    //restart highlight
 	    indexCorrect = 0;
 	    numberOfWordsTyped = 0;
-	    textToType.setText(textToType.getText().replaceAll("\\s+"," ").trim());
+	    textToType.setText(textToType.getText().replaceAll("\\s+", " ").trim());
 	    textToType.getHighlighter().removeAllHighlights();
 	    inputTextField.setDisabledTextColor(Color.black);
 
@@ -400,10 +400,10 @@ public class typingGameGui extends javax.swing.JFrame {
         }//GEN-LAST:event_textToTypeMouseClicked
 
         private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-                countdown = -1;
-                timeCounter.stop();
-                countSecs = 0;
-                this.pauseStateConfiguration();
+		countdown = -1;
+		timeCounter.stop();
+		countSecs = 0;
+		this.pauseStateConfiguration();
         }//GEN-LAST:event_cancelButtonActionPerformed
 
 	private Timer CountTime() {
@@ -446,6 +446,7 @@ public class typingGameGui extends javax.swing.JFrame {
 		this.state = "play";
 		textToType.getHighlighter().removeAllHighlights();
 		inputTextField.requestFocusInWindow();
+		inputTextField.setEnabled(true);
 		cancelButton.setVisible(true);
 	}
 
