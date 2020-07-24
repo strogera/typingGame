@@ -261,6 +261,7 @@ public class typingGameGui extends javax.swing.JFrame {
 	    //restart highlight
 	    indexCorrect = 0;
 	    numberOfWordsTyped = 0;
+	    textToType.setText(textToType.getText().replaceAll("\\s+"," ").trim());
 	    textToType.getHighlighter().removeAllHighlights();
 	    inputTextField.setDisabledTextColor(Color.black);
 
@@ -298,10 +299,10 @@ public class typingGameGui extends javax.swing.JFrame {
 	    //build the input String with the typed character added
 	    StringBuilder sb = new StringBuilder();
 	    sb.append(tempInputText);
-	    if (c != '\n') { //enter is allowed to change words
+	    if (c != KeyEvent.VK_ENTER) { //enter is allowed to change words
 		    sb.append(c);
 	    } else {
-		    sb.append(System.getProperty("line.separator"));
+		    sb.append(' ');
 	    }
 	    tempInputText = sb.toString();
 	    char[] inputText = tempInputText.toCharArray();
@@ -355,7 +356,7 @@ public class typingGameGui extends javax.swing.JFrame {
 		    Logger.getLogger(typingGameGui.class.getName()).log(Level.SEVERE, null, ex);
 	    }
 
-	    if (((c == ' ' || c == '\n') && (!hasMistakes))) { //go to the next word either by pressing space or enter when you complete a word
+	    if (((c == ' ' || c == KeyEvent.VK_ENTER) && (!hasMistakes))) { //go to the next word either by pressing space or enter when you complete a word
 		    evt.consume(); //don't show the space in the input text field, just change word
 		    inputTextField.setText("");
 		    indexCorrect += curWordCorrectCount;
