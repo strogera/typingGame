@@ -130,10 +130,10 @@ public class typingGameGui extends javax.swing.JFrame {
 
                 getContentPane().add(wps);
 
-                java.awt.GridBagLayout jPanel2Layout = new java.awt.GridBagLayout();
-                jPanel2Layout.columnWeights = new double[] {0.1};
-                jPanel2Layout.rowWeights = new double[] {0.1};
-                jPanel2.setLayout(jPanel2Layout);
+                java.awt.GridBagLayout jPanel2Layout1 = new java.awt.GridBagLayout();
+                jPanel2Layout1.columnWeights = new double[] {1.0};
+                jPanel2Layout1.rowWeights = new double[] {1.0};
+                jPanel2.setLayout(jPanel2Layout1);
 
                 jScrollPane1.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
 
@@ -143,7 +143,7 @@ public class typingGameGui extends javax.swing.JFrame {
                 textToType.setLineWrap(true);
                 textToType.setRows(5);
                 textToType.setText("hello world");
-                textToType.setToolTipText("");
+                textToType.setToolTipText("Double click to edit");
                 textToType.setWrapStyleWord(true);
                 textToType.setRequestFocusEnabled(false);
                 textToType.setSelectedTextColor(new java.awt.Color(180, 180, 180));
@@ -157,9 +157,9 @@ public class typingGameGui extends javax.swing.JFrame {
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 0;
-                gridBagConstraints.gridwidth = 3;
+                gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+                gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
                 gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
                 jPanel2.add(jScrollPane1, gridBagConstraints);
 
                 inputTextField.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -190,7 +190,7 @@ public class typingGameGui extends javax.swing.JFrame {
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 3;
                 gridBagConstraints.gridy = 1;
-                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
                 gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
                 jPanel2.add(playAgainButton, gridBagConstraints);
 
@@ -204,7 +204,7 @@ public class typingGameGui extends javax.swing.JFrame {
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 2;
                 gridBagConstraints.gridy = 1;
-                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
                 gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
                 jPanel2.add(cancelButton, gridBagConstraints);
 
@@ -399,11 +399,10 @@ public class typingGameGui extends javax.swing.JFrame {
         }//GEN-LAST:event_textToTypeMouseClicked
 
         private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-		countdown = -1;
-		timeCounter.stop();
-		countSecs = 0;
-		this.pauseStateConfiguration();
-
+                countdown = -1;
+                timeCounter.stop();
+                countSecs = 0;
+                this.pauseStateConfiguration();
         }//GEN-LAST:event_cancelButtonActionPerformed
 
 	private Timer CountTime() {
