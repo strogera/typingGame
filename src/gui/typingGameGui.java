@@ -261,6 +261,7 @@ public class typingGameGui extends javax.swing.JFrame {
 	    //restart highlight
 	    indexCorrect = 0;
 	    numberOfWordsTyped = 0;
+	    numberOfCharsTyped = 0;
 	    textToType.setText(textToType.getText().replaceAll("\\s+", " ").trim());
 	    textToType.getHighlighter().removeAllHighlights();
 	    inputTextField.setDisabledTextColor(Color.black);
@@ -338,6 +339,7 @@ public class typingGameGui extends javax.swing.JFrame {
 		    } catch (BadLocationException ble) {
 		    }
 	    } else {
+		    numberOfCharsTyped++;
 		    try {
 			    textToType.getHighlighter().removeAllHighlights();
 			    textToType.getHighlighter().addHighlight(0, indexCorrect + curWordCorrectCount, cyanPainter);
@@ -362,6 +364,7 @@ public class typingGameGui extends javax.swing.JFrame {
 		    indexCorrect += curWordCorrectCount;
 		    curWordCorrectCount = 0;
 		    numberOfWordsTyped++;
+
 	    }
 	    if (text.length == (indexCorrect + curWordCorrectCount)) { //end of game
 		    timeCounter.stop();
@@ -423,7 +426,8 @@ public class typingGameGui extends javax.swing.JFrame {
 					sb.append(String.valueOf(countSecs % 60));
 				}
 				sb.append(" WPM: ");
-				sb.append(String.valueOf((60 * numberOfWordsTyped) / countSecs));
+				sb.append(String.format("%.2f", (60 * ((numberOfCharsTyped / 4.7)+numberOfWordsTyped)/2) / countSecs)); //Taking both the chars and words into consideration is necessary because words don't account for the length of the words and chars/average length of english words(4.7) can be off and it doesn't account for space and special characters, potentially there can be improvement here.
+				System.out.println(numberOfCharsTyped);
 				//currTimeCount.setText("Time: " + String.valueOf(countSecs / 60) + ":" + String.valueOf(countSecs % 60) + "  WPM: " + String.valueOf((60 * numberOfWordsTyped) / countSecs));
 				currTimeCount.setText(sb.toString());
 			}
@@ -438,7 +442,7 @@ public class typingGameGui extends javax.swing.JFrame {
 		playAgainButton.setText("Play");
 		playAgainButton.setEnabled(true);
 		cancelButton.setVisible(false);
-		currTimeCount.setText("Time: - WPM: -");
+		//currTimeCount.setText("Time: - WPM: -");
 
 	}
 
@@ -511,7 +515,7 @@ public class typingGameGui extends javax.swing.JFrame {
 	private Timer timer, timeCounter;
 	private int countdown = 4;
 	private int countSecs = 0;
-	private int numberOfWordsTyped = 0, currWordStart = 0;
+	private int numberOfWordsTyped = 0, numberOfCharsTyped = 0;
 	private String state = "pause";
 	boolean emptyFieldFlag = true;
 }
