@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static javax.management.timer.Timer.ONE_SECOND;
@@ -100,6 +101,7 @@ public class typingGameGui extends javax.swing.JFrame {
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
                 setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+                setLocationByPlatform(true);
                 setPreferredSize(new java.awt.Dimension(640, 640));
                 getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
@@ -426,8 +428,7 @@ public class typingGameGui extends javax.swing.JFrame {
 					sb.append(String.valueOf(countSecs % 60));
 				}
 				sb.append(" WPM: ");
-				sb.append(String.format("%.2f", (60 * ((numberOfCharsTyped / 4.7)+numberOfWordsTyped)/2) / countSecs)); //Taking both the chars and words into consideration is necessary because words don't account for the length of the words and chars/average length of english words(4.7) can be off and it doesn't account for space and special characters, potentially there can be improvement here.
-				System.out.println(numberOfCharsTyped);
+				sb.append(String.format("%.2f", (60 * ((numberOfCharsTyped / 4.7) + numberOfWordsTyped) / 2) / countSecs)); //Taking both the chars and words into consideration is necessary because words don't account for the length of the words and chars/average length of english words(4.7) can be off and it doesn't account for space and special characters, potentially there can be improvement here.
 				//currTimeCount.setText("Time: " + String.valueOf(countSecs / 60) + ":" + String.valueOf(countSecs % 60) + "  WPM: " + String.valueOf((60 * numberOfWordsTyped) / countSecs));
 				currTimeCount.setText(sb.toString());
 			}
